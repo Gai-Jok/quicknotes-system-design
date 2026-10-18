@@ -1,0 +1,166 @@
+/* 1. Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f4f6f8;
+  color: #222;
+  line-height: 1.5;
+}
+
+/* 2. Header */
+header {
+  background-color: #8e0000;
+  color: white;
+  text-align: center;
+  padding: 24px 16px;
+}
+
+header h1 {
+  margin: 0;
+}
+
+/* 3. Centre the main content */
+main {
+  max-width: 640px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* 4. Status messages: distinct styles for success and error */
+#status {
+  min-height: 1.2em;
+  font-weight: bold;
+}
+
+.status-loading {
+  color: #555;
+}
+
+.status-success {
+  color: #0ba184;
+}
+
+.status-error {
+  color: #c0392b;
+}
+
+/* 5. Form */
+#note-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#note-form label {
+  font-weight: bold;
+}
+
+#note-form input,
+#note-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+#note-form button {
+  align-self: flex-start;
+}
+
+/* 6. Buttons */
+button {
+  background-color: #0ba184;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+  background-color: #088a70;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 7. Notes list */
+#notes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.note {
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-left: 4px solid #0ba184;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.note h3 {
+  margin: 0 0 6px 0;
+}
+
+.note p {
+  margin: 0 0 10px 0;
+  color: #444;
+}
+
+.delete-btn {
+  background-color: #8e0000;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background-color: #6b0000;
+}
+
+.empty-state {
+  color: #777;
+  font-style: italic;
+  padding: 10px 0;
+}
+
+/* 8. Footer */
+footer {
+  text-align: center;
+  color: #777;
+  padding: 16px;
+}
+
+/* 9. Phones */
+@media (max-width: 600px) {
+  header {
+    padding: 16px 12px;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+}
