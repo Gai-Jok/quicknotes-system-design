@@ -1,8 +1,13 @@
 // -------- 1. Select the elements we need --------
 const API_URL = "https://jsonplaceholder.typicode.com/posts";
+const MAX_TITLE_LENGTH = 100;
 
 const loadBtn = document.querySelector("#load-btn");
 const statusText = document.querySelector("#status");
+const form = document.querySelector("#note-form");
+const titleInput = document.querySelector("#title-input");
+const bodyInput = document.querySelector("#body-input");
+const submitBtn = document.querySelector("#submit-btn");
 const list = document.querySelector("#notes-list");
 
 // -------- 2. Status message helper (loading / success / error states) --------
@@ -55,6 +60,15 @@ function renderNotes(notes) {
   notes.forEach((note) => list.appendChild(createNoteElement(note)));
 }
 
+// Add a single newly-created note to the top of the list
+function addNoteToTop(note) {
+  const emptyMessage = list.querySelector(".empty-state");
+  if (emptyMessage) {
+    emptyMessage.remove();
+  }
+  list.insertBefore(createNoteElement(note), list.firstChild);
+}
+
 // -------- 6. GET: load 10 notes from the server --------
 async function loadNotes() {
   showStatus("Loading notes...", "loading");
@@ -74,5 +88,49 @@ async function loadNotes() {
   }
 }
 
-// -------- 7. Load button --------
+// -------- 7. POST: create a new note --------
+async function createNote(title, body) {
+  submitBtn.disabled = true;
+
+  try {
+    const response = await request(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, body, userId: 1 }),
+    });
+
+    const newNote = await response.json();
+
+    addNoteToTop(newNote);
+    showStatus(`Note created (status ${response.status}, id ${newNote.id}).`, "success");
+    form.reset();
+  } catch (error) {
+    showStatus("Could not create the note. Please try again.", "error");
+    console.error(error);
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+
+// -------- 8. Load button --------
 loadBtn.addEventListener("click", loadNotes);
+
+// -------- 9. Form submission: validate, then create --------
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const title = titleInput.value.trim();
+  const body = bodyInput.value.trim();
+
+  if (title === "") {
+    showStatus("Please enter a title.", "error");
+    return;
+  }
+
+  if (title.length > MAX_TITLE_LENGTH) {
+    showStatus(`Title must be ${MAX_TITLE_LENGTH} characters or fewer.`, "error");
+    return;
+  }
+
+  createNote(title, body);
+});
