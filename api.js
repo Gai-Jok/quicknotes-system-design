@@ -10,8 +10,9 @@ const bodyInput = document.querySelector("#body-input");
 const submitBtn = document.querySelector("#submit-btn");
 const list = document.querySelector("#notes-list");
 
-// -------- 2. Status message helper (loading / success / error states) --------
+// -------- 2. Status message helpers (loading / success / error states) --------
 function showStatus(message, kind) {
+  // kind is "loading", "success" or "error" - each gets its own CSS class
   statusText.textContent = message;
   statusText.className = kind ? `status-${kind}` : "";
 }
@@ -39,8 +40,15 @@ function createNoteElement(note) {
   const body = document.createElement("p");
   body.textContent = note.body || "";
 
+  const del = document.createElement("button");
+  del.type = "button";
+  del.textContent = "Delete";
+  del.classList.add("delete-btn");
+  del.addEventListener("click", () => deleteNote(note.id, li));
+
   li.appendChild(title);
   li.appendChild(body);
+  li.appendChild(del);
 
   return li;
 }
@@ -112,10 +120,36 @@ async function createNote(title, body) {
   }
 }
 
-// -------- 8. Load button --------
+// -------- 8. DELETE: remove a note --------
+// NOTE on JSONPlaceholder's behaviour: this is a practice API that fakes
+// success responses but does not actually persist any changes on its
+// server - it will return 200 OK for a DELETE even for an id that was
+// never really stored there (e.g. a note we "created" in Task 2, which
+// JSONPlaceholder accepts but never saves). Because there is no real
+// server-side state to verify against, we treat any non-error response
+// from request() as "the delete succeeded" and remove the note from our
+// own UI, which is the most honest behaviour this practice API allows.
+async function deleteNote(id, listItem) {
+  try {
+    await request(`${API_URL}/${id}`, { method: "DELETE" });
+
+    listItem.remove();
+
+    if (list.children.length === 0) {
+      renderNotes([]);
+    }
+
+    showStatus("Note deleted.", "success");
+  } catch (error) {
+    showStatus("Could not delete the note. Please try again.", "error");
+    console.error(error);
+  }
+}
+
+// -------- 9. Load button --------
 loadBtn.addEventListener("click", loadNotes);
 
-// -------- 9. Form submission: validate, then create --------
+// -------- 10. Form submission: validate, then create --------
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
